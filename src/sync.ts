@@ -12,7 +12,7 @@ export interface SyncRequest {
 }
 
 interface Item {
-  uid: string
+  id: string
 }
 
 interface Organization extends Item {
@@ -68,16 +68,15 @@ async function getSpace(
   org: Organization
 ): Promise<Space> {
   core.startGroup(`Requesting spaces for org ${org.title}`)
-  const error = new Error('No spaces found')
   const spaces = await client
-    .get<Request<Space>>(`owners/${org.uid}/spaces`)
+    .get<Request<Space>>(`orgs/${org.id}/spaces`)
     .then((res: AxiosResponse<Request<Space>>) => res.data)
-    .catch(() => {
+    .catch((error) => {
       throw error
     })
 
   if (!spaces || !spaces.items || spaces.items.length === 0) {
-    throw error
+    throw new Error('Really no spaces found')
   }
 
   const spaceItem: Space | undefined = spaces.items.find(
@@ -103,7 +102,7 @@ export async function sync(request: SyncRequest): Promise<void> {
   const orgItem = await getOrganziation(client, org)
   const spaceItem = await getSpace(client, space, orgItem)
 
-  let syncUrl = `spaces/${spaceItem.uid}/content/v/master/url/`
+  let syncUrl = `spaces/${spaceItem.id}/content/v/master/url/`
 
   core.endGroup()
 
@@ -162,7 +161,7 @@ export async function sync(request: SyncRequest): Promise<void> {
           core.info(`file ${fileUrl} doesn't exists`)
         })
 
-      if (existingFile && existingFile.uid) {
+      if (existingFile && existingFile.id) {
         core.info('file exist, updating title and content ...')
 
         await client

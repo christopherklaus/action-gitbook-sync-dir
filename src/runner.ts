@@ -20,7 +20,7 @@ export async function run(): Promise<void> {
       apiEndpoint,
       group
     })
-  } catch (error) {
+  } catch (error: any) {
     core.setFailed(error.message)
   }
 }
