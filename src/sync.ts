@@ -20,7 +20,7 @@ interface Organization extends Item {
 }
 
 interface Space extends Item {
-  name: string
+  title: string
 }
 
 interface Request<T> {
@@ -80,7 +80,7 @@ async function getSpace(
   }
 
   const spaceItem: Space | undefined = spaces.items.find(
-    (item: {name: string}) => item.name === space
+    (item: {title: string}) => item.title === space
   )
 
   if (!spaceItem) {

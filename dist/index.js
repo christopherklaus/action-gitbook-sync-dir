@@ -165,7 +165,7 @@ function getSpace(client, space, org) {
         if (!spaces || !spaces.items || spaces.items.length === 0) {
             throw new Error('Really no spaces found');
         }
-        const spaceItem = spaces.items.find((item) => item.name === space);
+        const spaceItem = spaces.items.find((item) => item.title === space);
         if (!spaceItem) {
             throw new Error(`No space with name ${space} found`);
         }
